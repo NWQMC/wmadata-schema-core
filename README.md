@@ -1,0 +1,1 @@
+# wmadata-schema-core
