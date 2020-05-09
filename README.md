@@ -1,4 +1,4 @@
-# schema\-nwis\-ws\-star
+# wmadata\-schema\-core
 
 Liquibase scripts for creating the WMADATA database schema objects in a Postgres database. They 
 are used for the GeoServer.
