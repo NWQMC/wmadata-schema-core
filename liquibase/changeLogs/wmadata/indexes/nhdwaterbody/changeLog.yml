@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+        author: gpetrochenkov
+        id: "create.indexes.${WMADATA_SCHEMA_NAME}.nhdwaterbody"
+        preConditions:
+          - onFail: MARK_RAN
+          - onError: HALT
+          - not:
+            - indexExists:
+                schemaName: ${WMADATA_SCHEMA_NAME}
+                indexName: nhdwaterbody_areasqkm_idx
+        changes:
+          - sqlFile:
+                path: nhdwaterbody.sql
+                relativeToChangelogFile: true
+          - rollback:
+                path: nhdwaterbody_rollback.sql
+                relativeToChangelogFile: true

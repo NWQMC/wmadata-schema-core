@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+        author: gpetrochenkov
+        id: "create.indexes.${WMADATA_SCHEMA_NAME}.catchmentsp"
+        preConditions:
+          - onFail: MARK_RAN
+          - onError: HALT
+          - not:
+            - indexExists:
+                schemaName: ${WMADATA_SCHEMA_NAME}
+                indexName: catchmentsp_areasqkm_idx
+        changes:
+          - sqlFile:
+                path: catchmentsp.sql
+                relativeToChangelogFile: true
+          - rollback:
+                path: catchmentsp_rollback.sql
+                relativeToChangelogFile: true

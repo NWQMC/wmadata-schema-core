@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - preConditions:
+    - dbms:
+        type: postgresql
+    -runningAs:
+        username: ${WMADATA_SCHEMA_OWNER_USERNAME}
+
+  - changeSet:
+      author: drsteini
+      id: "create.table.${WMADATA_SCHEMA_NAME}.gagesii"
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - not:
+          - tableExists:
+              schemaName: ${WMADATA_SCHEMA_NAME}
+              tableName: gagesii
+      changes:
+        - sqlFile:
+            path: gagesii.sql
+            relativeToChangelogFile: true
+        - rollback: drop table if exists ${WMADATA_SCHEMA_NAME}.gagesii cascade;

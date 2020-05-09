@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - preConditions:
+    - dbms:
+        type: postgresql
+    - runningAs:
+        username: ${WMADATA_SCHEMA_OWNER_USERNAME}
+
+  - include:
+      file: "catchmentsp/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "gagesii/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "huc08/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "huc12/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "huc12agg/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "huc12all/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "nhdarea/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "nhdflowline_network/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "nhdwaterbody/changeLog.yml"
+      relativeToChangelogFile: true

@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+        author: gpetrochenkov
+        id: "create.indexes.${WMADATA_SCHEMA_NAME}.nhdflowline_network"
+        preConditions:
+          - onFail: MARK_RAN
+          - onError: HALT
+          - not:
+            - indexExists:
+                schemaName: ${WMADATA_SCHEMA_NAME}
+                indexName: nhdflowline_network_comid_idx
+        changes:
+          - sqlFile:
+                path: nhdflowline_network.sql
+                relativeToChangelogFile: true
+          - rollback:
+                path: nhdflowilne_network_rollback.sql
+                relativeToChangelogFile: true

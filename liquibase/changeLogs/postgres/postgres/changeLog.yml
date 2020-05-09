@@ -1,0 +1,88 @@
+databaseChangeLog:
+  - preConditions:
+    - dbms:
+        type: postgresql
+    - runningAs:
+        username: postgres
+
+  - changeSet:
+      author: drsteini
+      id: "create.project.db.owner.role.${NWIS_DB_OWNER_USERNAME}"
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: select count(*) from pg_roles where rolname = '${NWIS_DB_OWNER_USERNAME}';
+      changes:
+        - sql: create role ${NWIS_DB_OWNER_USERNAME} with login password '${NWIS_DB_OWNER_PASSWORD}';
+        - rollback: drop role if exists ${NWIS_DB_OWNER_USERNAME};
+
+  - changeSet:
+      author: drsteini
+      id: "grant.${NWIS_DB_OWNER_USERNAME}.to.postgres"
+      changes:
+        - sql: grant ${NWIS_DB_OWNER_USERNAME} to postgres;
+        - rollback: revoke ${NWIS_DB_OWNER_USERNAME} from postgres;
+
+  - changeSet:
+      author: gpetrochenkov
+      id: "create.project.owner.role.${WMADATA_SCHEMA_OWNER_USERNAME}"
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: select count(*) from pg_roles where rolname = '${WMADATA_SCHEMA_OWNER_USERNAME}';
+      changes:
+        - sql: create role ${WMADATA_SCHEMA_OWNER_USERNAME} with login password '${WMADATA_SCHEMA_OWNER_PASSWORD}';
+        - rollback: drop role if exists ${WMADATA_SCHEMA_OWNER_USERNAME};
+
+  - changeSet:
+      author: gpetrochenkov
+      id: "grant.${WMADATA_SCHEMA_OWNER_USERNAME}.to.postgres"
+      changes:
+        - sql: grant ${WMADATA_SCHEMA_OWNER_USERNAME} to postgres;
+        - rollback: revoke ${WMADATA_SCHEMA_OWNER_USERNAME} from postgres;
+
+  - changeSet:
+      author: mbucknell
+      id: "create.project.database.${NWIS_DATABASE_NAME}"
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: select count(*) from pg_database where datname = '${NWIS_DATABASE_NAME}';
+      runInTransaction: false
+      changes:
+        - sql: create database ${NWIS_DATABASE_NAME} with owner = ${NWIS_DB_OWNER_USERNAME};
+        - rollback: drop database if exists ${NWIS_DATABASE_NAME};
+
+  - changeSet:
+      author: gpetrochenkov
+      id: "alter.role.${WMADATA_SCHEMA_OWNER_USERNAME}.search_path"
+      changes:
+        - sql: alter role "${WMADATA_SCHEMA_OWNER_USERNAME}" set search_path = "$user", ${WMADATA_SCHEMA_NAME}, public, tiger;
+        - rollback: alter role "${WMADATA_SCHEMA_OWNER_USERNAME}" reset search_path;
+
+  - changeSet:
+      author: gpetrochenkov
+      id: "create.project.user.role.${WMADATA_DB_READ_ONLY_USERNAME}"
+      preConditions:
+        - onFail: MARK_RAN
+        - onError: HALT
+        - sqlCheck:
+            expectedResult: 0
+            sql: select count(*) from pg_roles where rolname = '${WMADATA_DB_READ_ONLY_USERNAME}';
+      changes:
+        - sql: create role ${WMADATA_DB_READ_ONLY_USERNAME} with login password '${WMADATA_DB_READ_ONLY_PASSWORD}';
+        - rollback: drop role if exists ${WMADATA_DB_READ_ONLY_USERNAME};
+
+  - changeSet:
+      author: gpetrochenkov
+      id: "alter.role.${WMADATA_DB_READ_ONLY_USERNAME}.search_path"
+      changes:
+        - sql: alter role "${WMADATA_DB_READ_ONLY_USERNAME}" set search_path = "$user", ${WMADATA_SCHEMA_NAME},  public, tiger;
+        - rollback: alter role "${WMADATA_DB_READ_ONLY_USERNAME}" reset search_path;
+

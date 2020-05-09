@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - preConditions:
+    - dbms:
+        type: postgresql
+    -runningAs:
+        username: ${NWIS_SCHEMA_OWNER_USERNAME}
+
+  - changeSet:
+      author: gpetrochenkov
+      id: "grant.select.tables.${WMADATA_DB_READ_ONLY_USERNAME}"
+      changes:
+        - sql:
+            sql: alter default privileges in schema ${WMADATA_SCHEMA_NAME} grant select on tables to ${WMADATA_DB_READ_ONLY_USERNAME};
+        - rollback: alter default privileges in schema ${WMADATA_SCHEMA_NAME} revoke select on tables from ${WMADATA_DB_READ_ONLY_USERNAME};

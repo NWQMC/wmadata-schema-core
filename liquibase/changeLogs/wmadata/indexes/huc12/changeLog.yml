@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+        author: gpetrochenkov
+        id: "create.index.${WMADATA_SCHEMA_NAME}.huc12_the_geom_geom_idx"
+        preConditions:
+          - onFail: MARK_RAN
+          - onError: HALT
+          - not:
+            - indexExists:
+                schemaName: ${WMADATA_SCHEMA_NAME}
+                indexName: huc12_the_geom_geom_idx
+        changes:
+          - sql: create index huc12_the_geom_geom_idx on ${WMADATA_SCHEMA_NAME}.huc12 USING gist(the_geom);
+          - rollback: drop index if exists ${WMADATA_SCHEMA_NAME}.huc12_the_geom_geom_idx;

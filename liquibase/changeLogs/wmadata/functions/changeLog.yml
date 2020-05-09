@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - preConditions:
+    - dbms:
+        type: postgresql
+    - runningAs:
+        username: ${WMADATA_SCHEMA_OWNER_USERNAME}
+
+  - include:
+        file: "table/changeLog.yml"
+        relativeToChangelogFile: true
+
+  - include:
+        file: "getUtcTimestampUsingOffset/changeLog.yml"
+        relativeToChangelogFile: true

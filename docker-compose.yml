@@ -1,0 +1,47 @@
+version: '3'
+services:
+  db:
+    image: wqp_nwis_db
+    build:
+      context: .
+    networks:
+      wqp:
+        ipv4_address: ${DB_IPV4}
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${NWIS_DATABASE_NAME}
+    ports:
+      - ${DB_PORT}:5432
+    container_name: ${NWIS_DATABASE_ADDRESS}
+
+  liquibase:
+    image: wmadata_nwis_liquibase
+    build:
+      context: ./liquibase
+      args:
+        - LIQUIBASE_VERSION=${LIQUIBASE_VERSION}
+        - A_JDBC_JAR=${JDBC_JAR}
+    networks:
+      wqp:
+        ipv4_address: ${LIQUIBASE_IPV4}
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - NWIS_DATABASE_ADDRESS=${NWIS_DATABASE_ADDRESS}
+      - NWIS_DATABASE_NAME=${NWIS_DATABASE_NAME}
+      - NWIS_DB_OWNER_USERNAME=${NWIS_DB_OWNER_USERNAME}
+      - NWIS_DB_OWNER_PASSWORD=${NWIS_DB_OWNER_PASSWORD}
+      - WMADATA_SCHEMA_NAME=${WMADATA_SCHEMA_NAME}
+      - WMADATA_SCHEMA_OWNER_USERNAME=${WMADATA_SCHEMA_OWNER_USERNAME}
+      - WMADATA_SCHEMA_OWNER_PASSWORD=${WMADATA_SCHEMA_OWNER_PASSWORD}
+      - WMADATA_DB_READ_ONLY_USERNAME=${WMADATA_DB_READ_ONLY_USERNAME}
+      - WMADATA_DB_READ_ONLY_PASSWORD=${WMADATA_DB_READ_ONLY_PASSWORD}
+
+    volumes:
+      - ./liquibase/changeLogs:/home/java/workspace/nwis
+      - ./liquibase/scripts:/docker-entrypoint-initdb.d
+    container_name: nwis_liquibase
+
+networks:
+  wqp:
+    external:
+      name: ${LOCAL_NETWORK_NAME}

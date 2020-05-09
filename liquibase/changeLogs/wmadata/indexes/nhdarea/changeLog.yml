@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+        author: gpetrochenkov
+        id: "create.indexes.${WMADATA_SCHEMA_NAME}.nhdarea"
+        preConditions:
+          - onFail: MARK_RAN
+          - onError: HALT
+          - not:
+            - indexExists:
+                schemaName: ${WMADATA_SCHEMA_NAME}
+                indexName: nhdarea_areasqkm_idx
+        changes:
+          - sqlFile:
+                path: nhdarea.sql
+                relativeToChangelogFile: true
+          - rollback:
+                path: nhdarea_rollback.sql
+                relativeToChangelogFile: true

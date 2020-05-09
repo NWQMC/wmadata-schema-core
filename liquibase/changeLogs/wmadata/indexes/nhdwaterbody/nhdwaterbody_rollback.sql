@@ -1,0 +1,14 @@
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_areasqkm_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_comid_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_elevation_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_fcode_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_fdate_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_ftype_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_gnis_id_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_gnis_name_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_onoffnet_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_purpcode_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nnhdwaterbody_purpdesc_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_reachcode_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_resolution_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdwaterbody_the_geom_geom_idx;
