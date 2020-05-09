@@ -1,7 +1,7 @@
 # wmadata\-schema\-core
 
 Liquibase scripts for creating the WMADATA database schema objects in a Postgres database. They 
-are used for the GeoServer.
+are used for the GeoServer located here: https://labs.waterdata.usgs.gov/geoserver/web/
 
 ## Docker
 Also included are Docker Compose scripts to create PostgreSQL and Liquibase containers for testing the scripts.
