@@ -3,7 +3,7 @@ databaseChangeLog:
     - dbms:
         type: postgresql
     -runningAs:
-        username: ${NWIS_SCHEMA_OWNER_USERNAME}
+        username: ${WMADATA_SCHEMA_OWNER_USERNAME}
 
   - changeSet:
       author: gpetrochenkov
