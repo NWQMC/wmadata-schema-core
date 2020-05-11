@@ -4,7 +4,7 @@ databaseChangeLog:
         type: postgresql
 
   - changeSet:
-      author: mbucknell
+      author: gpetrochenkov
       id: "create.function.${WMADATA_SCHEMA_NAME}.truncate_table"
       changes:
         - sqlFile:

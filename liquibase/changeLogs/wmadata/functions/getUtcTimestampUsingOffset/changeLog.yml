@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - preConditions:
+    - dbms:
+        type: postgresql
+
+  - changeSet:
+      author: drsteini
+      id: "create.function.${WMADATA_SCHEMA_NAME}.get_utc_timestamp_using_offset"
+      changes:
+        - sqlFile:
+            path: getUtcTimestampUsingOffset.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+        - rollback: drop function if exists ${WMADATA_SCHEMA_NAME}.get_utc_timestamp_using_offset(timestamp, character varying);

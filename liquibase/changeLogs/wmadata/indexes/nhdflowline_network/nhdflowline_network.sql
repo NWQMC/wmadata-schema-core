@@ -408,3 +408,6 @@ CREATE INDEX nhdflowline_network_vpuid_idx
 
 CREATE INDEX nhdflowline_network_enabled_idx
  ON ${WMADATA_SCHEMA_NAME}.nhdflowline_network USING btree (enabled);
+
+CREATE INDEX nhdflowline_network_the_geom_geom_idx
+ ON ${WMADATA_SCHEMA_NAME}.nhdflowline_network USING gist (the_geom);

@@ -9,25 +9,25 @@ databaseChangeLog:
       file: "catchmentsp/changeLog.yml"
       relativeToChangelogFile: true
 
-#  - include:
-#      file: "gagesii/changeLog.yml"
-#      relativeToChangelogFile: true
-#
-#  - include:
-#      file: "huc08/changeLog.yml"
-#      relativeToChangelogFile: true
-#
-#  - include:
-#      file: "huc12/changeLog.yml"
-#      relativeToChangelogFile: true
-#
-#  - include:
-#      file: "huc12agg/changeLog.yml"
-#      relativeToChangelogFile: true
-#
-#  - include:
-#      file: "huc12all/changeLog.yml"
-#      relativeToChangelogFile: true
+  - include:
+      file: "gagesii/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "huc08/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "huc12/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "huc12agg/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
+      file: "huc12all/changeLog.yml"
+      relativeToChangelogFile: true
 
   - include:
       file: "nhdarea/changeLog.yml"

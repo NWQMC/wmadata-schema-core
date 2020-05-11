@@ -135,3 +135,4 @@ DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_network_rareahload_idx;
 DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_network_rpuid_idx;
 DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_network_vpuid_idx;
 DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_network_enabled_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_network_the_geom_geom_idx;
