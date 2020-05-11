@@ -7,8 +7,16 @@ databaseChangeLog:
 
   - changeSet:
       author: gpetrochenkov
+      id: "grant.usage.${WMADATA_SCHEMA_NAME}.to.${WMADATA_DB_READ_ONLY_USERNAME}"
+      changes:
+        - sql:
+            sql: grant usage on schema ${WMADATA_SCHEMA_NAME} to ${WMADATA_DB_READ_ONLY_USERNAME};
+        - rollback: revoke usage on schema ${WMADATA_SCHEMA_NAME} from ${WMADATA_DB_READ_ONLY_USERNAME};
+
+  - changeSet:
+      author: gpetrochenkov
       id: "grant.select.tables.${WMADATA_DB_READ_ONLY_USERNAME}"
       changes:
         - sql:
-            sql: alter default privileges in schema ${WMADATA_SCHEMA_NAME} grant select on tables to ${WMADATA_DB_READ_ONLY_USERNAME};
-        - rollback: alter default privileges in schema ${WMADATA_SCHEMA_NAME} revoke select on tables from ${WMADATA_DB_READ_ONLY_USERNAME};
+            sql: grant select on all tables in schema ${WMADATA_SCHEMA_NAME} to ${WMADATA_DB_READ_ONLY_USERNAME};
+        - rollback: revoke select on all tables in schema ${WMADATA_SCHEMA_NAME} from ${WMADATA_DB_READ_ONLY_USERNAME};
