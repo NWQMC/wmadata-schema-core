@@ -38,6 +38,7 @@ pipeline {
           /usr/bin/tar xzf $WORKSPACE/wmadata/liquibase.tar.gz --overwrite -C $WORKSPACE/wmadata
           /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/postgres/$JDBC_JAR $WORKSPACE/wmadata/lib/$JDBC_JAR
           /usr/local/bin/aws s3 cp s3://test-scnoble/ $WORKSPACE/wmadata/dumps --recursive --exclude "*" --include ".gz"
+          ls $WORKSPACE/wmadata/dumps
         fi
         '''
       }
@@ -81,7 +82,7 @@ pipeline {
     stage('Ingest Data') {
       agent {
           docker{ image 'mdillon/postgis'
-           args '-v ${$WORKSPACE}:/data'
+           args '-v $WORKSPACE:/data'
            }
       }
       steps{
@@ -101,7 +102,7 @@ pipeline {
             db_name=`cat $WORKSPACE/dbname.txt`
             db_address=`cat $WORKSPACE/dbaddress.txt`
 
-            for file in /data/wmadata/dumps/*.pgdump
+            for file in $WORKSPACE/wmadata/dumps/*.pgdump
             do
             basefile=$(basename $file)
             tablename="${basefile%.*}"
