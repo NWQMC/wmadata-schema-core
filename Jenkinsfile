@@ -103,6 +103,7 @@ pipeline {
             psql -U $WMADATA_SCHEMA_OWNER_USERNAME -f $file postgresql://${NWIS_DATABASE_ADDRESS}:5432/${NWIS_DATABASE_NAME}
             done
             '''
+        }
       }
     }
   }
