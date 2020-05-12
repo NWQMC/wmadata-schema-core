@@ -38,6 +38,14 @@ pipeline {
           /usr/bin/tar xzf $WORKSPACE/wmadata/liquibase.tar.gz --overwrite -C $WORKSPACE/wmadata
           /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/postgres/$JDBC_JAR $WORKSPACE/wmadata/lib/$JDBC_JAR
           /usr/local/bin/aws s3 cp s3://test-scnoble/gagesii.pgdump.gz $WORKSPACE/wmadata/dumps/gagesii.pgdump.gz
+          /usr/local/bin/aws s3 cp s3://test-scnoble/huc08.pgdump.gz $WORKSPACE/wmadata/dumps/huc08.pgdump.gz
+          /usr/local/bin/aws s3 cp s3://test-scnoble/huc12.pgdump.gz $WORKSPACE/wmadata/dumps/huc12.pgdump.gz
+          /usr/local/bin/aws s3 cp s3://test-scnoble/huc12all.pgdump.gz $WORKSPACE/wmadata/dumps/huc12all.pgdump.gz
+          /usr/local/bin/aws s3 cp s3://test-scnoble/huc12agg.pgdump.gz $WORKSPACE/wmadata/dumps/huc12agg.pgdump.gz
+          /usr/local/bin/aws s3 cp s3://test-scnoble/nhdarea.pgdump.gz $WORKSPACE/wmadata/dumps/nhdarea.pgdump.gz
+          /usr/local/bin/aws s3 cp s3://test-scnoble/nhdflowline_network.pgdump.gz $WORKSPACE/wmadata/dumps/nhdflowline_network.pgdump.gz
+          /usr/local/bin/aws s3 cp s3://test-scnoble/nhdwaterbody.pgdump.gz $WORKSPACE/wmadata/dumps/nhdwaterbody.pgdump.gz
+          /usr/local/bin/aws s3 cp s3://test-scnoble/catchmentsp.pgdump.gz $WORKSPACE/wmadata/dumps/catchmentsp.pgdump.gz
           ls $WORKSPACE/wmadata/dumps
         fi
         '''
@@ -83,6 +91,7 @@ pipeline {
       agent {
           docker{ image 'mdillon/postgis'
            args '-v $WORKSPACE:/data'
+           reuseNode true
            }
       }
       steps{
@@ -93,6 +102,7 @@ pipeline {
 
             pwd
             ls
+            echo $NWIS_DB_OWNER_USERNAME
             pgpassword=`cat $WORKSPACE/pgpassword.txt`
             export PGPASSWORD=${pgpassword}
             for file in /data/wmadata/dumps/*.gz; do gzip -d $file; done;
