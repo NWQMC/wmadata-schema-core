@@ -2,10 +2,6 @@ pipeline {
   agent {
     node {
       label 'project:any'
-    },
-    docker
-    {
-      image 'mdillon/postgis'
     }
   }
   stages {
@@ -69,12 +65,44 @@ pipeline {
 
             chmod +x $WORKSPACE/liquibase/scripts/z1_postgres_liquibase.sh
             chmod +x $WORKSPACE/liquibase/scripts/z2_wmadata_liquibase.sh
-            chmod +x $WORKSPACE/liquibase/scripts/z3_ingest_data.sh
             $WORKSPACE/liquibase/scripts/z1_postgres_liquibase.sh
             $WORKSPACE/liquibase/scripts/z2_wmadata_liquibase.sh
-            $WORKSPACE/liquibase/scripts/z3_ingest_data.sh
             '''
         }
+      }
+    }
+
+    stage('Ingest Data') {
+      agent {
+          docker: mdillon/postgis
+      }
+      steps{
+
+        script {
+          def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/WQP-EXTERNAL-$DEPLOY_STAGE" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
+          def secretsJson =  readJSON text: secretsString
+          env.NWIS_DATABASE_ADDRESS = secretsJson.DATABASE_ADDRESS
+          env.NWIS_DATABASE_NAME = secretsJson.DATABASE_NAME
+          env.NWIS_DB_OWNER_USERNAME = secretsJson.DB_OWNER_USERNAME
+          env.NWIS_DB_OWNER_PASSWORD = secretsJson.DB_OWNER_PASSWORD
+          env.WMADATA_SCHEMA_NAME = secretsJson.WMADATA_SCHEMA_NAME
+          env.WMADATA_SCHEMA_OWNER_USERNAME = secretsJson.WMADATA_SCHEMA_OWNER_USERNAME
+          env.WMADATA_SCHEMA_OWNER_PASSWORD = secretsJson.WMADATA_SCHEMA_OWNER_PASSWORD
+          env.WMADATA_DB_READ_ONLY_USERNAME = secretsJson.WMADATA_DB_READ_ONLY_USERNAME
+          env.WMADATA_DB_READ_ONLY_PASSWORD = secretsJson.WMADATA_DB_READ_ONLY_PASSWORD
+          env.POSTGRES_PASSWORD = secretsJson.POSTGRES_PASSWORD
+
+          sh '''
+            for file in $WORKSPACE/wmadata/dumps/*.gz; do gzip -d $file; done;
+
+            for file in $WORKSPACE/wmadata/dumps/*.pgdump
+            do
+            basefile=$(basename $file)
+            tablename="${basefile%.*}"
+            sed -i 's/public.'$tablename'/'$WMADATA_SCHEMA_NAME'.'$tablename'/g' $file
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -f $file postgresql://${NWIS_DATABASE_ADDRESS}:5432/${NWIS_DATABASE_NAME}
+            done
+            '''
       }
     }
   }
