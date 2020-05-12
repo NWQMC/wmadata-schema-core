@@ -4,13 +4,6 @@ pipeline {
       label 'project:any'
     }
   }
-  environment {
-            pgpassword = ''
-            schema_name = ''
-            schema_user = ''
-            db_address = ''
-            db_name = ''
-  }
   stages {
     stage('Set Build Description') {
       steps {
@@ -39,6 +32,7 @@ pipeline {
     stage('Download liquibase jar') {
       steps {
         sh '''mkdir $WORKSPACE/wmadata
+        mkdir $WORKSPACE/wmadata/dumps
         if [ ! -f nldi/liquibase ]; then
           /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/liquibase/liquibase-$LIQUIBASE_VERSION.tar.gz $WORKSPACE/wmadata/liquibase.tar.gz
           /usr/bin/tar xzf $WORKSPACE/wmadata/liquibase.tar.gz --overwrite -C $WORKSPACE/wmadata
@@ -54,23 +48,24 @@ pipeline {
           def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/WQP-EXTERNAL-$DEPLOY_STAGE" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
           def secretsJson =  readJSON text: secretsString
           env.NWIS_DATABASE_ADDRESS = secretsJson.DATABASE_ADDRESS
-          db_address=secretsJson.DATABASE_ADDRESS
           env.NWIS_DATABASE_NAME = secretsJson.DATABASE_NAME
-          db_name=secretsJson.DATABASE_NAME
           env.NWIS_DB_OWNER_USERNAME = secretsJson.DB_OWNER_USERNAME
           env.NWIS_DB_OWNER_PASSWORD = secretsJson.DB_OWNER_PASSWORD
           env.WMADATA_SCHEMA_NAME = secretsJson.WMADATA_SCHEMA_NAME
-          schema_name=secretsJson.WMADATA_SCHEMA_NAME
           env.WMADATA_SCHEMA_OWNER_USERNAME = secretsJson.WMADATA_SCHEMA_OWNER_USERNAME
-          schema_user=secretsJson.WMADATA_SCHEMA_OWNER_USERNAME
           env.WMADATA_SCHEMA_OWNER_PASSWORD = secretsJson.WMADATA_SCHEMA_OWNER_PASSWORD
-          pgpassword=secretsJson.WMADATA_SCHEMA_OWNER_PASSWORD
           env.WMADATA_DB_READ_ONLY_USERNAME = secretsJson.WMADATA_DB_READ_ONLY_USERNAME
           env.WMADATA_DB_READ_ONLY_PASSWORD = secretsJson.WMADATA_DB_READ_ONLY_PASSWORD
           env.POSTGRES_PASSWORD = secretsJson.POSTGRES_PASSWORD
           
           sh '''
-           
+
+            echo $WMADATA_SCHEMA_OWNER_PASSWORD > pgpassword.txt
+            echo $WMADATA_SCHEMA_OWNER_USERNAME > schemauser.txt
+            echo $WMADATA_SCHEMA_NAME > schema.txt
+            echo $NWIS_DATABASE_ADDRESS > dbaddress.txt
+            echo $NWIS_DATABASE_NAME > dbname.txt
+
             export LIQUIBASE_HOME=$WORKSPACE/wmadata
             export LIQUIBASE_WORKSPACE_NWIS=$WORKSPACE/liquibase/changeLogs
 
@@ -93,8 +88,14 @@ pipeline {
 
           sh '''
 
+            pgpassword=`cat pgpassword.txt`
             export PGPASSWORD=${pgpassword}
             for file in $WORKSPACE/wmadata/dumps/*.gz; do gzip -d $file; done;
+
+            schema_user='cat schemauser.txt'
+            schame_name='cat schemaname.txt'
+            db_name='cat dbname.txt'
+            db_address='cat dbaddress.txt'
 
             for file in $WORKSPACE/wmadata/dumps/*.pgdump
             do
