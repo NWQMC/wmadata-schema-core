@@ -90,6 +90,7 @@ pipeline {
 
           sh '''
 
+            ls
             pgpassword=`cat /data/pgpassword.txt`
             export PGPASSWORD=${pgpassword}
             for file in /data/wmadata/dumps/*.gz; do gzip -d $file; done;
