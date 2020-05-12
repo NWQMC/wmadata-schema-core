@@ -3,6 +3,9 @@ pipeline {
     node {
       label 'project:any'
     }
+    agent {
+        docker { image 'mdillon/postgis' }
+    }
   }
   stages {
     stage('Set Build Description') {
