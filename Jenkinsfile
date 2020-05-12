@@ -5,10 +5,10 @@ pipeline {
     }
   }
   environment {
-            pgpassword = '',
-            schema_name = '',
-            schema_user = '',
-            db_address = '',
+            pgpassword = ''
+            schema_name = ''
+            schema_user = ''
+            db_address = ''
             db_name = ''
   }
   stages {
