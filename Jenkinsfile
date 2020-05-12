@@ -99,25 +99,15 @@ pipeline {
         script {
 
           sh '''
-
-            pwd
-            ls
-            echo $NWIS_DB_OWNER_USERNAME
-            pgpassword=`cat $WORKSPACE/pgpassword.txt`
-            export PGPASSWORD=${pgpassword}
+            export PGPASSWORD=$WMADATA_SCHEMA_OWNER_PASSWORD
             for file in /data/wmadata/dumps/*.gz; do gzip -d $file; done;
-
-            schema_user=`cat $WORKSPACE/schemauser.txt`
-            schame_name=`cat '$WORKSPACE'/schemaname.txt`
-            db_name=`cat $WORKSPACE/dbname.txt`
-            db_address=`cat $WORKSPACE/dbaddress.txt`
 
             for file in $WORKSPACE/wmadata/dumps/*.pgdump
             do
             basefile=$(basename $file)
             tablename="${basefile%.*}"
-            sed -i 's/public.'$tablename'/'${schema_name}'.'$tablename'/g' $file
-            psql -U ${schema_user} -f $file postgresql://${db_address}:5432/${db_name}
+            sed -i 's/public.'$tablename'/'$WMADATA_SCHEMA_NAME'.'$tablename'/g' $file
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -f $file postgresql://$NWIS_DATABASE_ADDRESS:5432/$NWIS_DATABASE_NAME
             done
             '''
         }
