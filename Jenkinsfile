@@ -2,9 +2,10 @@ pipeline {
   agent {
     node {
       label 'project:any'
-    }
-    agent {
-        docker { image 'mdillon/postgis' }
+    },
+    docker
+    {
+      image 'mdillon/postgis'
     }
   }
   stages {
