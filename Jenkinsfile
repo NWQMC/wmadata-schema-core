@@ -80,7 +80,9 @@ pipeline {
 
     stage('Ingest Data') {
       agent {
-          docker{ image 'mdillon/postgis' }
+          docker{ image 'mdillon/postgis'
+           args '-v ${PWD}:/data'
+           }
       }
       steps{
 
@@ -88,16 +90,16 @@ pipeline {
 
           sh '''
 
-            pgpassword=`cat pgpassword.txt`
+            pgpassword=`cat /data/pgpassword.txt`
             export PGPASSWORD=${pgpassword}
-            for file in $WORKSPACE/wmadata/dumps/*.gz; do gzip -d $file; done;
+            for file in /data/wmadata/dumps/*.gz; do gzip -d $file; done;
 
-            schema_user='cat schemauser.txt'
-            schame_name='cat schemaname.txt'
-            db_name='cat dbname.txt'
-            db_address='cat dbaddress.txt'
+            schema_user='cat /data/schemauser.txt'
+            schame_name='cat /data/schemaname.txt'
+            db_name='cat /data/dbname.txt'
+            db_address='cat /data/dbaddress.txt'
 
-            for file in $WORKSPACE/wmadata/dumps/*.pgdump
+            for file in /data/wmadata/dumps/*.pgdump
             do
             basefile=$(basename $file)
             tablename="${basefile%.*}"
