@@ -37,7 +37,7 @@ pipeline {
           /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/liquibase/liquibase-$LIQUIBASE_VERSION.tar.gz $WORKSPACE/wmadata/liquibase.tar.gz
           /usr/bin/tar xzf $WORKSPACE/wmadata/liquibase.tar.gz --overwrite -C $WORKSPACE/wmadata
           /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/postgres/$JDBC_JAR $WORKSPACE/wmadata/lib/$JDBC_JAR
-          /usr/local/bin/aws s3 cp s3://test-scnoble/ $WORKSPACE/wmadata/dumps --recursive --exclude "*" --include ".gz"
+          /usr/local/bin/aws s3 cp s3://test-scnoble/gagesii.pgdumps.gz $WORKSPACE/wmadata/dumps/gagesii.pgdumps.gz
           ls $WORKSPACE/wmadata/dumps
         fi
         '''
@@ -92,7 +92,7 @@ pipeline {
           sh '''
 
             pwd
-            echo $WORKSPACE
+            ls
             pgpassword=`cat $WORKSPACE/pgpassword.txt`
             export PGPASSWORD=${pgpassword}
             for file in /data/wmadata/dumps/*.gz; do gzip -d $file; done;
