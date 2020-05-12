@@ -36,11 +36,11 @@ pipeline {
           /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/liquibase/liquibase-$LIQUIBASE_VERSION.tar.gz $WORKSPACE/wmadata/liquibase.tar.gz
           /usr/bin/tar xzf $WORKSPACE/wmadata/liquibase.tar.gz --overwrite -C $WORKSPACE/wmadata
           /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/postgres/$JDBC_JAR $WORKSPACE/wmadata/lib/$JDBC_JAR
+          /usr/local/bin/aws s3 cp s3://test-scnoble/ $WORKSPACE/wmadata/dumps --recursive --exclude "*" --include ".gz"
         fi
         '''
       }
     }
-    
     stage('Run liquibase') {
       steps {
         script {
@@ -61,11 +61,14 @@ pipeline {
            
             export LIQUIBASE_HOME=$WORKSPACE/wmadata
             export LIQUIBASE_WORKSPACE_NWIS=$WORKSPACE/liquibase/changeLogs
+            export PGPASSWORD=$WMADATA_SCHEMA_OWNER_PASSWORD
 
             chmod +x $WORKSPACE/liquibase/scripts/z1_postgres_liquibase.sh
             chmod +x $WORKSPACE/liquibase/scripts/z2_wmadata_liquibase.sh
+            chmod +x $WORKSPACE/liquibase/scripts/z3_ingest_data.sh
             $WORKSPACE/liquibase/scripts/z1_postgres_liquibase.sh
             $WORKSPACE/liquibase/scripts/z2_wmadata_liquibase.sh
+            $WORKSPACE/liquibase/scripts/z3_ingest_data.sh
             '''
         }
       }
