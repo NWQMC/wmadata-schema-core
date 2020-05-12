@@ -74,7 +74,7 @@ pipeline {
 
     stage('Ingest Data') {
       agent {
-          docker{ mdillon/postgis }
+          docker{ image 'mdillon/postgis' }
       }
       steps{
 
