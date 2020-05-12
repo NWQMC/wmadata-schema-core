@@ -60,11 +60,11 @@ pipeline {
           
           sh '''
 
-            echo $WMADATA_SCHEMA_OWNER_PASSWORD > pgpassword.txt
-            echo $WMADATA_SCHEMA_OWNER_USERNAME > schemauser.txt
-            echo $WMADATA_SCHEMA_NAME > schema.txt
-            echo $NWIS_DATABASE_ADDRESS > dbaddress.txt
-            echo $NWIS_DATABASE_NAME > dbname.txt
+            echo $WMADATA_SCHEMA_OWNER_PASSWORD > $WORKSPACE/pgpassword.txt
+            echo $WMADATA_SCHEMA_OWNER_USERNAME > $WORKSPACE/schemauser.txt
+            echo $WMADATA_SCHEMA_NAME > $WORKSPACE/schema.txt
+            echo $NWIS_DATABASE_ADDRESS > $WORKSPACE/dbaddress.txt
+            echo $NWIS_DATABASE_NAME > $WORKSPACE/dbname.txt
 
             export LIQUIBASE_HOME=$WORKSPACE/wmadata
             export LIQUIBASE_WORKSPACE_NWIS=$WORKSPACE/liquibase/changeLogs
@@ -81,7 +81,7 @@ pipeline {
     stage('Ingest Data') {
       agent {
           docker{ image 'mdillon/postgis'
-           args '-v ${PWD}:/data'
+           args '-v ${$WORKSPACE}:/data'
            }
       }
       steps{
@@ -91,14 +91,15 @@ pipeline {
           sh '''
 
             pwd
-            pgpassword=`cat /data/pgpassword.txt`
+            echo $WORKSPACE
+            pgpassword=`cat $WORKSPACE/pgpassword.txt`
             export PGPASSWORD=${pgpassword}
             for file in /data/wmadata/dumps/*.gz; do gzip -d $file; done;
 
-            schema_user='cat /data/schemauser.txt'
-            schame_name='cat /data/schemaname.txt'
-            db_name='cat /data/dbname.txt'
-            db_address='cat /data/dbaddress.txt'
+            schema_user=`cat $WORKSPACE/schemauser.txt`
+            schame_name=`cat '$WORKSPACE'/schemaname.txt`
+            db_name=`cat $WORKSPACE/dbname.txt`
+            db_address=`cat $WORKSPACE/dbaddress.txt`
 
             for file in /data/wmadata/dumps/*.pgdump
             do
