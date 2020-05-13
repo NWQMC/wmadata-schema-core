@@ -8,9 +8,9 @@ set -o pipefail
 # nwis schema scripts
 ${LIQUIBASE_HOME}/liquibase \
 	--classpath=${LIQUIBASE_HOME}/lib/${JDBC_JAR} \
-	--changeLogFile=${LIQUIBASE_WORKSPACE_NWIS}/wmadata/changeLog.yml \
+	--changeLogFile=${LIQUIBASE_WORKSPACE_WMADATA}/wmadata/changeLog.yml \
 	--driver=org.postgresql.Driver \
-	--url=jdbc:postgresql://${NWIS_DATABASE_ADDRESS}:5432/${NWIS_DATABASE_NAME} \
+	--url=jdbc:postgresql://${WMADATA_DATABASE_ADDRESS}:5432/${WMADATA_DATABASE_NAME} \
 	--username=${WMADATA_SCHEMA_OWNER_USERNAME} \
 	--password=${WMADATA_SCHEMA_OWNER_PASSWORD} \
 	--logLevel=debug \

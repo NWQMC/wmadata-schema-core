@@ -10,7 +10,7 @@ Also included are Docker Compose scripts to create PostgreSQL and Liquibase cont
 A named Docker Network is required for local running of the containers. Creating this network allows you to run all of the WQP locally in individual containers without having to maintain a massive Docker Compose script encompassing all of the required pieces. (It is also possible to run portions of the system locally against remote services.) The name of this network is provided by the __LOCAL_NETWORK_NAME__ environment variable. The following is a sample command for creating your own local network. In this example the name is wqp and the ip addresses will be 172.25.0.x
 
 ```
-docker network create --subnet=172.25.0.0/16 wqp
+docker network create --subnet=172.25.0.0/16 iow
 ```
 
 ### Environment variables
@@ -18,38 +18,38 @@ In order to use the docker compose scripts, you will need to create a .env file 
 the following (shown are example values):
 
 ```
-POSTGRES_PASSWORD=changeMe
+POSTGRES_PASSWORD=<changeMe>
 
-NWIS_DATABASE_ADDRESS=nwis_database_host
-NWIS_DATABASE_NAME=nwis_db
-NWIS_DB_OWNER_USERNAME=wqp_core
-NWIS_DB_OWNER_PASSWORD=changeMe
+WMADATA_DATABASE_ADDRESS=<wmadata_database_host>
+WMADATA_DATABASE_NAME=<wmadata_db>
+WMADATA_DB_OWNER_USERNAME=<wmadata_db_owner>
+WMADATA_DB_OWNER_PASSWORD=<changeMe>
 
-WMADATA_SCHEMA_NAME=wmadata
-WMADATA_SCHEMA_OWNER_USERNAME=wmadata_owner
-WMADATA_SCHEMA_OWNER_PASSWORD=changeMe
+WMADATA_SCHEMA_NAME=<wmadata_schema>
+WMADATA_SCHEMA_OWNER_USERNAME=<wmadata_owner>
+WMADATA_SCHEMA_OWNER_PASSWORD=<changeMe>
 
-WMADATA_DB_READ_ONLY_USERNAME=wmadata_reader
-WMADATA_DB_READ_ONLY_PASSWORD=changeMe
+WMADATA_DB_READ_ONLY_USERNAME=<wmadata_reader>
+WMADATA_DB_READ_ONLY_PASSWORD=<changeMe>
 
-LOCAL_NETWORK_NAME=wqp
+LOCAL_NETWORK_NAME=<iow>
 
-DB_IPV4=172.25.0.2
-DB_PORT=5434
-LIQUIBASE_IPV4=172.25.0.11
+DB_IPV4=<172.25.0.2>
+DB_PORT=<5434>
+LIQUIBASE_IPV4=<172.25.0.11>
 
-LIQUIBASE_VERSION=3.8.9
-JDBC_JAR=postgresql-42.2.5.jar
+LIQUIBASE_VERSION=<3.8.9>
+JDBC_JAR=<postgresql-42.2.9.jar>
 ```
 
 #### Environment variable definitions
 
 * **POSTGRES_PASSWORD** - Password for the postgres user.
 
-* **NWIS_DATABASE_ADDRESS** - Host name or IP address of the PostgreSQL database.
-* **NWIS_DATABASE_NAME** - Name of the PostgreSQL database to create for containing the schema.
-* **NWIS_DB_OWNER_USERNAME** - Role which will own the database.
-* **NWIS_DB_OWNER_PASSWORD** - Password for the **NWIS_SCHEMA_OWNER_USERNAME** role.
+* **WMADATA_DATABASE_ADDRESS** - Host name or IP address of the PostgreSQL database.
+* **WMADATA_DATABASE_NAME** - Name of the PostgreSQL database to create for containing the schema.
+* **WMADATA_DB_OWNER_USERNAME** - Role which will own the database.
+* **WMADATA_DB_OWNER_PASSWORD** - Password for the **WMADATA_DB_OWNER_USERNAME** role.
 
 * **WMADATA_SCHEMA_NAME** - Name of the schema to create for holding database objects.
 * **WMADATA_SCHEMA_OWNER_USERNAME** - Role will own the database objects.
