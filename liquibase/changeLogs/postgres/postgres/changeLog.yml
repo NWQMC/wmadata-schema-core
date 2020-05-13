@@ -7,23 +7,23 @@ databaseChangeLog:
 
   - changeSet:
       author: drsteini
-      id: "create.project.db.owner.role.${NWIS_DB_OWNER_USERNAME}"
+      id: "create.project.db.owner.role.${WMADATA_DB_OWNER_USERNAME}"
       preConditions:
         - onFail: MARK_RAN
         - onError: HALT
         - sqlCheck:
             expectedResult: 0
-            sql: select count(*) from pg_roles where rolname = '${NWIS_DB_OWNER_USERNAME}';
+            sql: select count(*) from pg_roles where rolname = '${WMADATA_DB_OWNER_USERNAME}';
       changes:
-        - sql: create role ${NWIS_DB_OWNER_USERNAME} with login password '${NWIS_DB_OWNER_PASSWORD}';
-        - rollback: drop role if exists ${NWIS_DB_OWNER_USERNAME};
+        - sql: create role ${WMADATA_DB_OWNER_USERNAME} with login password '${WMADATA_DB_OWNER_PASSWORD}';
+        - rollback: drop role if exists ${WMADATA_DB_OWNER_USERNAME};
 
   - changeSet:
       author: drsteini
-      id: "grant.${NWIS_DB_OWNER_USERNAME}.to.postgres"
+      id: "grant.${WMADATA_DB_OWNER_USERNAME}.to.postgres"
       changes:
-        - sql: grant ${NWIS_DB_OWNER_USERNAME} to postgres;
-        - rollback: revoke ${NWIS_DB_OWNER_USERNAME} from postgres;
+        - sql: grant ${WMADATA_DB_OWNER_USERNAME} to postgres;
+        - rollback: revoke ${WMADATA_DB_OWNER_USERNAME} from postgres;
 
   - changeSet:
       author: gpetrochenkov
@@ -47,17 +47,17 @@ databaseChangeLog:
 
   - changeSet:
       author: mbucknell
-      id: "create.project.database.${NWIS_DATABASE_NAME}"
+      id: "create.project.database.${WMADATA_DATABASE_NAME}"
       preConditions:
         - onFail: MARK_RAN
         - onError: HALT
         - sqlCheck:
             expectedResult: 0
-            sql: select count(*) from pg_database where datname = '${NWIS_DATABASE_NAME}';
+            sql: select count(*) from pg_database where datname = '${WMADATA_DATABASE_NAME}';
       runInTransaction: false
       changes:
-        - sql: create database ${NWIS_DATABASE_NAME} with owner = ${NWIS_DB_OWNER_USERNAME};
-        - rollback: drop database if exists ${NWIS_DATABASE_NAME};
+        - sql: create database ${WMADATA_DATABASE_NAME} with owner = ${WMADATA_DB_OWNER_USERNAME};
+        - rollback: drop database if exists ${WMADATA_DATABASE_NAME};
 
   - changeSet:
       author: gpetrochenkov
