@@ -33,7 +33,7 @@ pipeline {
       steps {
         sh '''mkdir $WORKSPACE/wmadata
         mkdir $WORKSPACE/wmadata/dumps
-        artifactoryurl="https://artifactory.wma.usgs.gov/artifactory/wma-binaries/lfs/api/nwc2wmadataprep"
+        artifactoryurl="https://artifactory.wma.chs.usgs.gov/artifactory/wma-binaries/lfs/api/nwc2wmadataprep"
         /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/liquibase/liquibase-$LIQUIBASE_VERSION.tar.gz $WORKSPACE/wmadata/liquibase.tar.gz
         /usr/bin/tar xzf $WORKSPACE/wmadata/liquibase.tar.gz --overwrite -C $WORKSPACE/wmadata
         /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/postgres/$JDBC_JAR $WORKSPACE/wmadata/lib/$JDBC_JAR
