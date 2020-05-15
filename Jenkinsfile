@@ -29,22 +29,23 @@ pipeline {
             url: 'https://github.com/NWQMC/wmadata-schema-core.git']]])
       }
     }
-    stage('Download liquibase jar') {
+    stage('Download liquibase jar and pgdumps') {
       steps {
         sh '''mkdir $WORKSPACE/wmadata
         mkdir $WORKSPACE/wmadata/dumps
+        artifactoryurl="https://artifactory.wma.usgs.gov/artifactory/wma-binaries/lfs/api/nwc2wmadataprep"
         /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/liquibase/liquibase-$LIQUIBASE_VERSION.tar.gz $WORKSPACE/wmadata/liquibase.tar.gz
         /usr/bin/tar xzf $WORKSPACE/wmadata/liquibase.tar.gz --overwrite -C $WORKSPACE/wmadata
         /usr/local/bin/aws s3 cp s3://owi-common-resources/resources/InstallFiles/postgres/$JDBC_JAR $WORKSPACE/wmadata/lib/$JDBC_JAR
-        /usr/local/bin/aws s3 cp s3://test-scnoble/gagesii.pgdump.gz $WORKSPACE/wmadata/dumps/gagesii.pgdump.gz
-        /usr/local/bin/aws s3 cp s3://test-scnoble/huc08.pgdump.gz $WORKSPACE/wmadata/dumps/huc08.pgdump.gz
-        /usr/local/bin/aws s3 cp s3://test-scnoble/huc12.pgdump.gz $WORKSPACE/wmadata/dumps/huc12.pgdump.gz
-        /usr/local/bin/aws s3 cp s3://test-scnoble/huc12all.pgdump.gz $WORKSPACE/wmadata/dumps/huc12all.pgdump.gz
-        /usr/local/bin/aws s3 cp s3://test-scnoble/huc12agg.pgdump.gz $WORKSPACE/wmadata/dumps/huc12agg.pgdump.gz
-        /usr/local/bin/aws s3 cp s3://test-scnoble/nhdarea.pgdump.gz $WORKSPACE/wmadata/dumps/nhdarea.pgdump.gz
-        /usr/local/bin/aws s3 cp s3://test-scnoble/nhdflowline_network.pgdump.gz $WORKSPACE/wmadata/dumps/nhdflowline_network.pgdump.gz
-        /usr/local/bin/aws s3 cp s3://test-scnoble/nhdwaterbody.pgdump.gz $WORKSPACE/wmadata/dumps/nhdwaterbody.pgdump.gz
-        /usr/local/bin/aws s3 cp s3://test-scnoble/catchmentsp.pgdump.gz $WORKSPACE/wmadata/dumps/catchmentsp.pgdump.gz
+        curl $artifactoryurl/gagesii.pgdump.gz > $WORKSPACE/wmadata/dumps/gagesii.pgdump.gz
+        curl $artifactoryurl/huc08.pgdump.gz > $WORKSPACE/wmadata/dumps/huc08.pgdump.gz
+        curl $artifactoryurl/huc12.pgdump.gz > $WORKSPACE/wmadata/dumps/huc12.pgdump.gz
+        curl $artifactoryurl/huc12all.pgdump.gz > $WORKSPACE/wmadata/dumps/huc12all.pgdump.gz
+        curl $artifactoryurl/huc12agg.pgdump.gz > $WORKSPACE/wmadata/dumps/huc12agg.pgdump.gz
+        curl $artifactoryurl/nhdarea.pgdump.gz > $WORKSPACE/wmadata/dumps/nhdarea.pgdump.gz
+        curl $artifactoryurl/nhdflowline_network.pgdump.gz > $WORKSPACE/wmadata/dumps/nhdflowline_network.pgdump.gz
+        curl $artifactoryurl/nhdwaterbody.pgdump.gz > $WORKSPACE/wmadata/dumps/nhdwaterbody.pgdump.gz
+        curl $artifactoryurl/catchmentsp.pgdump.gz > $WORKSPACE/wmadata/dumps/catchmentsp.pgdump.gz
         ls $WORKSPACE/wmadata/dumps
         '''
       }

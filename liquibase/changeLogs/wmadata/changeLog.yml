@@ -6,13 +6,14 @@ databaseChangeLog:
         username: ${WMADATA_SCHEMA_OWNER_USERNAME}
 
   - include:
-      file: "schemaGrants/changeLog.yml"
-      relativeToChangelogFile: true
-
-  - include:
       file: "tables/changeLog.yml"
       relativeToChangelogFile: true
 
   - include:
       file: "indexes/changeLog.yml"
       relativeToChangelogFile: true
+
+  - include:
+      file: "schemaGrants/changeLog.yml"
+      relativeToChangelogFile: true
+

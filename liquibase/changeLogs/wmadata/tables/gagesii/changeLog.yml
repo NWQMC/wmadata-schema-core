@@ -6,7 +6,7 @@ databaseChangeLog:
         username: ${WMADATA_SCHEMA_OWNER_USERNAME}
 
   - changeSet:
-      author: drsteini
+      author: gpetrochenkov
       id: "create.table.${WMADATA_SCHEMA_NAME}.gagesii"
       preConditions:
         - onFail: MARK_RAN
