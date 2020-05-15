@@ -68,14 +68,8 @@ pipeline {
           
           sh '''
 
-            echo $WMADATA_SCHEMA_OWNER_PASSWORD > $WORKSPACE/pgpassword.txt
-            echo $WMADATA_SCHEMA_OWNER_USERNAME > $WORKSPACE/schemauser.txt
-            echo $WMADATA_SCHEMA_NAME > $WORKSPACE/schema.txt
-            echo $WMADATA_DATABASE_ADDRESS > $WORKSPACE/dbaddress.txt
-            echo $WMADATA_DATABASE_NAME > $WORKSPACE/dbname.txt
-
             export LIQUIBASE_HOME=$WORKSPACE/wmadata
-            export LIQUIBASE_WORKSPACE_NWIS=$WORKSPACE/liquibase/changeLogs
+            export LIQUIBASE_WORKSPACE_WMADATA=$WORKSPACE/liquibase/changeLogs
 
             chmod +x $WORKSPACE/liquibase/scripts/z1_postgres_liquibase.sh
             chmod +x $WORKSPACE/liquibase/scripts/z2_wmadata_liquibase.sh
