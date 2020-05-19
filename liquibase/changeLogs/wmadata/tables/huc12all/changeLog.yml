@@ -7,7 +7,7 @@ databaseChangeLog:
 
   - changeSet:
       author: gpetrochenkov
-      validCheckSum: 8:f63ccdf900b7371a4a5b5fc20f34d314
+      validCheckSum: 8:551cea9ad893daab823b5d4aa9f71807
       id: "create.table.${WMADATA_SCHEMA_NAME}.huc12all"
       preConditions:
         - onFail: MARK_RAN

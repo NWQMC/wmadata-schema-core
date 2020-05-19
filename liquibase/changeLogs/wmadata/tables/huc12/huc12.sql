@@ -9,7 +9,7 @@ CREATE TABLE ${WMADATA_SCHEMA_NAME}.huc12
     humod character varying COLLATE pg_catalog."default",
     states character varying COLLATE pg_catalog."default",
     noncontrib double precision,
-    the_geom geometry(Polygon,4269)
+    the_geom geometry
 )
 WITH (
     OIDS = FALSE
