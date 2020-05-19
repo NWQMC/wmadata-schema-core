@@ -6,7 +6,8 @@ databaseChangeLog:
         username: ${WMADATA_SCHEMA_OWNER_USERNAME}
 
   - changeSet:
-      author: drsteini
+      author: gpetrochenkov
+      validCheckSum: 8:679dde989b5bd16054538853e670100d
       id: "create.table.${WMADATA_SCHEMA_NAME}.huc12"
       preConditions:
         - onFail: MARK_RAN
@@ -20,18 +21,4 @@ databaseChangeLog:
             path: huc12.sql
             relativeToChangelogFile: true
         - rollback: drop table if exists ${WMADATA_SCHEMA_NAME}.huc12 cascade;
-
-  - changeSet:
-      author: gpetrochenkov
-      id: "alter.column.${WMADATA_SCHEMA_NAME}.huc12.the_geom"
-      preConditions:
-        - onFail: MARK_RAN
-        - onError: HALT
-        - not:
-            - sqlCheck:
-                expectedResult: POLYGON
-                sql: SELECT type FROM geometry_columns WHERE f_table_schema = 'wmadata' AND f_table_name = 'huc12' and f_geometry_column = 'the_geom';
-      changes:
-        - sql: ALTER TABLE wmadata.huc12 ALTER COLUMN the_geom type geometry(Polygon,4629);
-        - rollback: ALTER TABLE wmadata.huc12 ALTER COLUMN the_geom type geometry(MultiPolygon,4629);
 
