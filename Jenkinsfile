@@ -1,7 +1,7 @@
 pipeline {
   agent {
     node {
-      label 'project:any'
+      label 'team:iow'
     }
   }
   stages {
@@ -102,6 +102,14 @@ pipeline {
             sed -i 's/public.'$tablename'/'$WMADATA_SCHEMA_NAME'.'$tablename'/g' $file
             psql -U $WMADATA_SCHEMA_OWNER_USERNAME -f $file postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
             done
+
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
+            "ALTER TABLE wmadata.huc12 ALTER COLUMN the_geom type geometry(MultiPolygon, 4269) using ST_Multi(the_geom);" \
+            postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
+
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
+            "ALTER TABLE wmadata.huc12all ALTER COLUMN the_geom type geometry(MultiPolygon, 4269) using ST_Multi(the_geom);" \
+            postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
             '''
         }
       }
