@@ -95,11 +95,28 @@ pipeline {
             export PGPASSWORD=$WMADATA_SCHEMA_OWNER_PASSWORD
             for file in /data/wmadata/dumps/*.gz; do gzip -d $file; done;
 
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
+            "TRUNCATE TABLE wmadata.huc12;" \
+            postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
+
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
+            "ALTER TABLE wmadata.huc12 ALTER COLUMN the_geom type geometry;" \
+            postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
+
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
+            "TRUNCATE TABLE wmadata.huc12all;" \
+            postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
+
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
+            "ALTER TABLE wmadata.huc12all ALTER COLUMN the_geom type geometry;" \
+            postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
+
             for file in $WORKSPACE/wmadata/dumps/*.pgdump
             do
             basefile=$(basename $file)
             tablename="${basefile%.*}"
             sed -i 's/public.'$tablename'/'$WMADATA_SCHEMA_NAME'.'$tablename'/g' $file
+            psql -U U $WMADATA_SCHEMA_OWNER_USERNAME -c \
             psql -U $WMADATA_SCHEMA_OWNER_USERNAME -f $file postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
             done
 
