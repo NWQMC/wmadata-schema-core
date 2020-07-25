@@ -116,7 +116,6 @@ pipeline {
             basefile=$(basename $file)
             tablename="${basefile%.*}"
             sed -i 's/public.'$tablename'/'$WMADATA_SCHEMA_NAME'.'$tablename'/g' $file
-            psql -U U $WMADATA_SCHEMA_OWNER_USERNAME -c \
             psql -U $WMADATA_SCHEMA_OWNER_USERNAME -f $file postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
             done
 
