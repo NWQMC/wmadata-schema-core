@@ -126,6 +126,19 @@ pipeline {
             psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
             "ALTER TABLE wmadata.huc12all ALTER COLUMN the_geom type geometry(MultiPolygon, 4269) using ST_Multi(the_geom);" \
             postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
+
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
+            "ALTER TABLE wmadata.huc08 ALTER COLUMN the_geom TYPE geometry(MULTIPOLYGON, 4269) USING ST_Transform(ST_SetSRID(the_geom,900913),4269);" \
+            postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
+
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
+            "ALTER TABLE wmadata.huc12agg ALTER COLUMN the_geom TYPE geometry(MULTIPOLYGON, 4269) USING ST_Transform(ST_SetSRID(the_geom,900913),4269)" \
+            postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
+
+            psql -U $WMADATA_SCHEMA_OWNER_USERNAME -c \
+            "ALTER TABLE wmadata.gagesii ALTER COLUMN the_geom TYPE geometry(MULTIPOINT, 4269) USING ST_Transform(ST_SetSRID(the_geom,900913),4269);" \
+            postgresql://$WMADATA_DATABASE_ADDRESS:5432/$WMADATA_DATABASE_NAME
+
             '''
         }
       }
