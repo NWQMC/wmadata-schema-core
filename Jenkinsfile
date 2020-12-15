@@ -44,6 +44,7 @@ pipeline {
         curl $artifactoryurl/huc12agg.pgdump.gz > $WORKSPACE/wmadata/dumps/huc12agg.pgdump.gz
         curl $artifactoryurl/nhdarea.pgdump.gz > $WORKSPACE/wmadata/dumps/nhdarea.pgdump.gz
         curl $artifactoryurl/nhdflowline_network.pgdump.gz > $WORKSPACE/wmadata/dumps/nhdflowline_network.pgdump.gz
+        curl $artifactoryurl/nhdflowline_nonnetwork.pgdump.gz > $WORKSPACE/wmadata/dumps/nhdflowline_nonnetwork.pgdump.gz
         curl $artifactoryurl/nhdwaterbody.pgdump.gz > $WORKSPACE/wmadata/dumps/nhdwaterbody.pgdump.gz
         curl $artifactoryurl/catchmentsp.pgdump.gz > $WORKSPACE/wmadata/dumps/catchmentsp.pgdump.gz
         ls $WORKSPACE/wmadata/dumps
