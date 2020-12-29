@@ -20,12 +20,12 @@ pipeline {
     stage('Git Clone') {
       steps {
         checkout([
-            $class: 'GitSCM', 
-            branches: [[name: '*/master']], 
-            doGenerateSubmoduleConfigurations: false, 
-            extensions: [], 
-            submoduleCfg: [], 
-            userRemoteConfigs: [[credentialsId: 'CIDA-Jenkins-GitHub', 
+            $class: 'GitSCM',
+            branches: [[name: '*/master']],
+            doGenerateSubmoduleConfigurations: false,
+            extensions: [],
+            submoduleCfg: [],
+            userRemoteConfigs: [[credentialsId: 'CIDA-Jenkins-GitHub',
             url: 'https://github.com/NWQMC/wmadata-schema-core.git']]])
       }
     }
@@ -53,9 +53,28 @@ pipeline {
     }
     stage('Run liquibase') {
       steps {
-        script {
+          script {
+          def mappedStage = ""
+          def deployStage = "$DEPLOY_STAGE"
+          println(deployStage)
+          switch(deployStage) {
+            case "PROD-EXTERNAL":
+              mappedStage = "legacy-production-external"
+              break
+            case "QA":
+              mappedStage = "legacy-qa"
+              break
+            case "TEST":
+              mappedStage = "legacy-test"
+              break
+            default:
+              mappedStage = "development"
+          }
+          env.MAPPED_STAGE = mappedStage
+          def dbAdminSecret = sh(script: '/usr/local/bin/aws secretsmanager get-secret-value --secret-id "/observations-db-$MAPPED_STAGE/$MAPPED_STAGE/rds-admin-password" --region "us-west-2"', returnStdout: true).trim()
           def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/WQP-EXTERNAL-$DEPLOY_STAGE" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
           def secretsJson =  readJSON text: secretsString
+          def dbAdminSecretJson = readJSON text: dbAdminSecret
           env.WMADATA_DATABASE_ADDRESS = secretsJson.DATABASE_ADDRESS
           env.WMADATA_DATABASE_NAME = secretsJson.DATABASE_NAME
           env.WMADATA_DB_OWNER_USERNAME = secretsJson.DB_OWNER_USERNAME
@@ -65,8 +84,8 @@ pipeline {
           env.WMADATA_SCHEMA_OWNER_PASSWORD = secretsJson.WMADATA_SCHEMA_OWNER_PASSWORD
           env.WMADATA_DB_READ_ONLY_USERNAME = secretsJson.WMADATA_DB_READ_ONLY_USERNAME
           env.WMADATA_DB_READ_ONLY_PASSWORD = secretsJson.WMADATA_DB_READ_ONLY_PASSWORD
-          env.POSTGRES_PASSWORD = secretsJson.POSTGRES_PASSWORD
-          
+          env.POSTGRES_PASSWORD = dbAdminSecretJson.SecretString
+
           sh '''
 
             export LIQUIBASE_HOME=$WORKSPACE/wmadata
