@@ -38,5 +38,9 @@ databaseChangeLog:
       relativeToChangelogFile: true
 
   - include:
+      file: "nhdflowline_nonnetwork/changeLog.yml"
+      relativeToChangelogFile: true
+
+  - include:
       file: "nhdwaterbody/changeLog.yml"
       relativeToChangelogFile: true

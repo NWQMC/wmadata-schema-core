@@ -1,0 +1,13 @@
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_comid_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_fdate_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_resolution_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_gnis_id_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_gnis_name_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_lengthkm_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_reachcode_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_flowdir_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_wbareacomi_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_ftype_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_fcode_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_shape_length_idx;
+DROP INDEX IF EXISTS ${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork_the_geom_geom_idx;
