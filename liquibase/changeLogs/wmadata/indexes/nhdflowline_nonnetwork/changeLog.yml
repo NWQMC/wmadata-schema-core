@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+        author: wteather
+        id: "create.indexes.${WMADATA_SCHEMA_NAME}.nhdflowline_nonnetwork"
+        preConditions:
+          - onFail: MARK_RAN
+          - onError: HALT
+          - not:
+            - indexExists:
+                schemaName: ${WMADATA_SCHEMA_NAME}
+                indexName: nhdflowline_nonnetwork_comid_idx
+        changes:
+          - sqlFile:
+                path: nhdflowline_nonnetwork.sql
+                relativeToChangelogFile: true
+          - rollback:
+                path: nhdflowilne_nonnetwork_rollback.sql
+                relativeToChangelogFile: true
