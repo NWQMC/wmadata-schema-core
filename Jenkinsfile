@@ -65,6 +65,7 @@ pipeline {
           env.WMADATA_SCHEMA_OWNER_PASSWORD = secretsJson.WMADATA_SCHEMA_OWNER_PASSWORD
           env.WMADATA_DB_READ_ONLY_USERNAME = secretsJson.WMADATA_DB_READ_ONLY_USERNAME
           env.WMADATA_DB_READ_ONLY_PASSWORD = secretsJson.WMADATA_DB_READ_ONLY_PASSWORD
+          env.POSTGRES_PASSWORD = secretsJson.POSTGRES_PASSWORD
           
           sh '''
 
