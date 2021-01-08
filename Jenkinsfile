@@ -1,7 +1,7 @@
 pipeline {
   agent {
     node {
-      label 'team:iow'
+      label 'team:nhgf'
     }
   }
   stages {
@@ -54,7 +54,7 @@ pipeline {
     stage('Run liquibase') {
       steps {
         script {
-          def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/WQP-EXTERNAL-$DEPLOY_STAGE" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
+          def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/NLDI_$DEPLOY_STAGE" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
           def secretsJson =  readJSON text: secretsString
           env.WMADATA_DATABASE_ADDRESS = secretsJson.DATABASE_ADDRESS
           env.WMADATA_DATABASE_NAME = secretsJson.DATABASE_NAME
@@ -65,7 +65,6 @@ pipeline {
           env.WMADATA_SCHEMA_OWNER_PASSWORD = secretsJson.WMADATA_SCHEMA_OWNER_PASSWORD
           env.WMADATA_DB_READ_ONLY_USERNAME = secretsJson.WMADATA_DB_READ_ONLY_USERNAME
           env.WMADATA_DB_READ_ONLY_PASSWORD = secretsJson.WMADATA_DB_READ_ONLY_PASSWORD
-          env.POSTGRES_PASSWORD = secretsJson.POSTGRES_PASSWORD
           
           sh '''
 
