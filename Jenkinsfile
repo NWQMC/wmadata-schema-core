@@ -57,7 +57,11 @@ pipeline {
           if ("${DEPLOY_STAGE}" == "development") {
             env.ROLE_ARN = "arn:aws:iam::807615458658:role/dev-owi-assume"
           }
-          sh(script: '/usr/local/bin/aws sts assume-role --role-arn $ROLE_ARN --role-session-name tmp_session --duration-seconds 3600')
+          def sessionString = sh(script: '/usr/local/bin/aws sts assume-role --role-arn $ROLE_ARN --role-session-name tmp_session --duration-seconds 3600')
+          def sessionJson = readJSON text: sessionString
+          env.AWS_ACCESS_KEY_ID = sessionJson.Credentials.AccessKeyId
+          env.AWS_SECRET_ACCESS_KEY = sessionJson.Credentials.SecretAccessKey
+          env.AWS_SESSION_TOKEN = sessionJson.Credentials.SessionToken
           def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/$WMADATA_SECRET_NAME" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
           def secretsJson =  readJSON text: secretsString
           env.POSTGRES_PASSWORD = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager//nldi-db-$DEPLOY_STAGE/rds-admin-password" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
