@@ -57,8 +57,8 @@ pipeline {
           if ("${DEPLOY_STAGE}" == "development") {
             env.ROLE_ARN = "arn:aws:iam::807615458658:role/dev-owi-assume"
           }
-          def sessionString = sh(script: '/usr/local/bin/aws sts assume-role --role-arn $ROLE_ARN --role-session-name tmp_session --duration-seconds 3600')
-          def sessionJson = readJSON text: sessionString
+          sh(script: '/usr/local/bin/aws sts assume-role --role-arn $ROLE_ARN --role-session-name tmp_session --duration-seconds 3600 > aws_session.json')
+          def sessionJson = readJSON file: "aws_session.json"
           env.AWS_ACCESS_KEY_ID = sessionJson.Credentials.AccessKeyId
           env.AWS_SECRET_ACCESS_KEY = sessionJson.Credentials.SecretAccessKey
           env.AWS_SESSION_TOKEN = sessionJson.Credentials.SessionToken
