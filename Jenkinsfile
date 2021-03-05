@@ -54,7 +54,7 @@ pipeline {
     stage('Run liquibase') {
       steps {
         script {
-          def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/nldi-$DEPLOY_STAGE" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
+          def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/$WMADATA_SECRET_NAME" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
           def secretsJson =  readJSON text: secretsString
           env.POSTGRES_PASSWORD = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager//nldi-db-$DEPLOY_STAGE/rds-admin-password" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
           env.WMADATA_DATABASE_ADDRESS = "nldi-db-${DEPLOY_STAGE}.dev-nwis.usgs.gov"
