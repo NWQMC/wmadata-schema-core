@@ -54,8 +54,13 @@ pipeline {
     stage('Run liquibase') {
       steps {
         script {
+          def dbHost = "not-defined"
           if ("${DEPLOY_STAGE}" == "development") {
             env.ROLE_ARN = "arn:aws:iam::807615458658:role/dev-owi-assume"
+            dbHost = ".dev-nwis.usgs.gov"
+          } else if ("${DEPLOY_STAGE}" == "production-unrestricted") {
+            env.ROLE_ARN = "arn:aws:iam::579777464052:role/adfs-developers"
+            dbHost = ".nwis.usgs.gov"
           }
           sh(script: '/usr/local/bin/aws sts assume-role --role-arn $ROLE_ARN --role-session-name tmp_session --duration-seconds 3600 > aws_session.json')
           def sessionJson = readJSON file: "aws_session.json"
@@ -65,7 +70,7 @@ pipeline {
           def secretsString = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager/$WMADATA_SECRET_NAME" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
           def secretsJson =  readJSON text: secretsString
           env.POSTGRES_PASSWORD = sh(script: '/usr/local/bin/aws ssm get-parameter --name "/aws/reference/secretsmanager//nldi-db-$DEPLOY_STAGE/rds-admin-password" --query "Parameter.Value" --with-decryption --output text --region "us-west-2"', returnStdout: true).trim()
-          env.WMADATA_DATABASE_ADDRESS = "nldi-db-${DEPLOY_STAGE}.dev-nwis.usgs.gov"
+          env.WMADATA_DATABASE_ADDRESS = "nldi-db-${DEPLOY_STAGE}" + dbHost
           env.WMADATA_DATABASE_NAME = secretsJson.DATABASE_NAME
           env.WMADATA_DB_OWNER_USERNAME = secretsJson.DB_OWNER_USERNAME
           env.WMADATA_DB_OWNER_PASSWORD = secretsJson.DB_OWNER_PASSWORD
